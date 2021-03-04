@@ -1,6 +1,6 @@
 # Labo 1
 
-Group work realized in the scope of GEN Lessons
+Group work realized in the scope of GEN Lessons, at HEIG-VD, academic year 2020/2021.
 
 ## Description
 
@@ -11,7 +11,7 @@ A very nice project!
 * Maven
 
 ## Authors
-@fabio10000
-@yanik23
-@TheSnekySnek
-@EmmanuelJanssens
+* Fabio Marquez		- fabio10000
+* Yanik Lange		- yanik23
+* Diego Villagrasa	- TheSnekySnek
+* Emmanuel Janssens	- EmmanuelJanssens
