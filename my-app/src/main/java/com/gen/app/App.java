@@ -1,13 +1,22 @@
 package com.gen.app;
 
-/**
- * Hello world!
- *
- */
-public class App 
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+
+import java.util.concurrent.Callable;
+
+
+@Command(name = "statique", description = "Static site generator")
+class Statique implements Callable<Integer> {
+
+    @Override
+    public Integer call() throws Exception {
+        CommandLine.usage(this, System.out);
+        return 0;
+    }
+
+    public static void main(String... args) {
+        int exitCode = new CommandLine(new Statique()).execute(args);
+        System.exit(exitCode);
     }
 }
