@@ -11,7 +11,7 @@ A very nice project!
 * Maven
 
 ## Authors
-* Fabio Marquez		- fabio10000
+* Fabio Marques		- fabio10000
 * Yanik Lange		- yanik23
 * Diego Villagrasa	- TheSnekySnek
 * Emmanuel Janssens	- EmmanuelJanssens
