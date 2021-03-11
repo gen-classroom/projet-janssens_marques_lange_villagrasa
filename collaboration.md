@@ -13,7 +13,7 @@ nomenclature: fb-<nom_explicite>-<idIssue>
 titre: Résume de se qui a été fait
 description: plus de détails + Closes #<id>
 Pull request sur la branche master obligatoire avec 1 reviewer
-Pull request obligatoire sur la branche dev avec 1 reviewer
+Pull request obligatoire sur la branche dev avec 1 reviewer 
 
 ## Code style
 asdsad
