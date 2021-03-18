@@ -1,7 +1,5 @@
 package com.gen.app;
 
-
-import org.w3c.dom.ls.LSOutput;
 import picocli.CommandLine;
 
 import java.util.concurrent.Callable;
