@@ -6,7 +6,9 @@ import picocli.CommandLine.Command;
 import java.util.concurrent.Callable;
 
 
-@Command(name = "statique", description = "Static site generator")
+@Command(name = "statique", description = "Static site generator",
+         subcommands = {Init.class, Clean.class, Build.class, Serve.class})
+
 class Statique implements Callable<Integer> {
 
     @Override
@@ -19,4 +21,5 @@ class Statique implements Callable<Integer> {
         int exitCode = new CommandLine(new Statique()).execute(args);
         System.exit(exitCode);
     }
+
 }
