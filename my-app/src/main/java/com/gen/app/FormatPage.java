@@ -5,9 +5,11 @@ public class FormatPage {
         return "";
     }
 
-    void saveMetada(String metadata) {
-
+    String metaDataToJson(String metadata)
+    {
+        return "";
     }
+
 
     void formatPage(String page) {
 
