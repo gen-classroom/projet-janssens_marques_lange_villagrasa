@@ -17,5 +17,5 @@ jobs:
         working-directory: ./my-app
         run: mvn clean install -DskipTests=true
       - name: Run the tests
-        working-directory: ./LabJavaIO
+        working-directory: ./my-app
         run: mvn test
