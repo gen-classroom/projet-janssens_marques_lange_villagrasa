@@ -12,16 +12,17 @@ public class FormatPageTest extends TestCase {
     }
 
     public void testSaveMetada() {
-        String inputString = "titre: Mon premier article\nauteur: Bertil Chapuis\n date: 2021-03-10";
-        String outputString;
-        String expected = "{\n\ttitre: \"Mon premier Article\",\n\tauteur: \"Bertil Chapuis\",\n\tdate: \"2021-03-10\"\n}";
+        String inputString = "titre: Mon premier Article\nauteur: Bertil Chapuis\ndate: 2021-03-10";
+        JsonObject outputString;
 
         FormatPage format = new FormatPage();
-        StringBuilder builder = new StringBuilder();
 
         outputString = format.metaDataToJson(inputString);
 
-        assertEquals(outputString,expected);
+        assertTrue(outputString.isJsonObject());
+        assertTrue(outputString.get("titre").getAsString().equals("Mon premier Article"));
+        assertTrue(outputString.get("auteur").getAsString().equals("Bertil Chapuis"));
+        assertTrue(outputString.get("date").getAsString().equals("2021-03-10"));
     }
 
     public void testFormatPage() {
