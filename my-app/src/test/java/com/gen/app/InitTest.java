@@ -46,4 +46,20 @@ public class InitTest{
             assert(false);
         }
     }
+
+    @Test
+    public void canWriteMetadata() {
+        try {
+            Init init = new Init();
+            init.createWebsiteFolder(testWebsite);
+            File dir = new File(testWebsite);
+            init.addMetaData(testWebsite);
+            assert(Files.exists(Paths.get(testWebsite + "/meta.json")));
+            init.deleteDirectory(dir);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            assert(false);
+        }
+    }
 }

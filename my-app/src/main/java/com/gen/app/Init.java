@@ -12,16 +12,22 @@ import java.util.concurrent.Callable;
 
 @CommandLine.Command(name = "init", description = "initialisation")
 
+
+
 public class Init implements Callable<Integer> {
 
     @CommandLine.Parameters(index = "0", description = "Path for the new website.")
     private String sitePath;
+
+    String defaultConfig = "{\n\tname: \"\"\n}";
+    String defaultMetadata = "{}";
 
     @Override
     public Integer call() throws Exception {
         createWebsiteFolder(sitePath);
         System.out.print("Created site directory: " + sitePath);
         addConfig(sitePath);
+        addMetaData(sitePath);
         return 1;
     }
 
@@ -40,7 +46,21 @@ public class Init implements Callable<Integer> {
      */
     void addConfig(String sitePath){
         try{
-            Files.write(Paths.get(sitePath + "/config.json"), "{}".getBytes(StandardCharsets.UTF_8));
+            Files.write(Paths.get(sitePath + "/config.json"), defaultConfig.getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e){
+            System.err.println("Could not create config file");
+            e.printStackTrace();
+        }
+        System.out.println("Created config file");
+    }
+
+    /**
+     * Adds the config file to the website folder
+     * @param sitePath Path of the website
+     */
+    void addMetaData(String sitePath){
+        try{
+            Files.write(Paths.get(sitePath + "/meta.json"), defaultMetadata.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e){
             System.err.println("Could not create config file");
             e.printStackTrace();
