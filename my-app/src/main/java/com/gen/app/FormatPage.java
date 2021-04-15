@@ -30,7 +30,6 @@ public class FormatPage {
 
         JsonObject jsonObject = new JsonParser().parse(str.toString()).getAsJsonObject();
         return jsonObject;
-
     }
 
 

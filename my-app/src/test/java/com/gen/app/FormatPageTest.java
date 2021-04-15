@@ -3,14 +3,17 @@ package com.gen.app;
 
 import junit.framework.TestCase;
 import com.google.gson.*;
+import org.junit.Test;
 
 
 import java.io.*;
+
 public class FormatPageTest extends TestCase {
 
     public void testMarkdownToHtml() {
     }
 
+    @Test
     public void testSaveMetada() {
         String inputString = "titre: Mon premier Article\nauteur: Bertil Chapuis\ndate: 2021-03-10";
         JsonObject outputString;
