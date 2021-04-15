@@ -1,12 +1,8 @@
 package com.gen.app;
 
-import junit.framework.TestCase;
 import com.google.gson.*;
 import org.junit.Test;
-import java.io.*;
-import com.gen.app.FormatPage;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 
 public class FormatPageTest{
