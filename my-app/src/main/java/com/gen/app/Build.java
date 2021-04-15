@@ -25,7 +25,7 @@ public class Build implements Callable<Integer> {
     FormatPage fp = new FormatPage();
 
     @CommandLine.Parameters(index="0", description="Build specified site")
-    private String sitePath;
+    public String sitePath;
 
     @Override
     public Integer call() throws Exception {
@@ -36,7 +36,7 @@ public class Build implements Callable<Integer> {
     /**
      * Builds the website
      */
-    private void buildWebsite(){
+    public void buildWebsite(){
         // Create the build directory
         try {
             Files.createDirectories(Paths.get(sitePath + "/build"));
