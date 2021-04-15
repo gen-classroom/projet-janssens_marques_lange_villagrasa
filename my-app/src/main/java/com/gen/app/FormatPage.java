@@ -1,12 +1,12 @@
 package com.gen.app;
 
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.github.rjeschke.txtmark.Processor;
 
 public class FormatPage {
     String markdownToHtml(String markdown) {
-        return "";
+        return Processor.process(markdown);
     }
 
     JsonObject metaDataToJson(String metadata)

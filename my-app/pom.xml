@@ -35,6 +35,11 @@
       <artifactId>picocli</artifactId>
       <version>4.6.1</version>
     </dependency>
+    <dependency>
+      <groupId>es.nitaur.markdown</groupId>
+      <artifactId>txtmark</artifactId>
+      <version>0.16</version>
+    </dependency>
   </dependencies>
 
   <build>
