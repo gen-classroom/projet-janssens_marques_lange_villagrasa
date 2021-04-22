@@ -40,6 +40,11 @@
       <artifactId>txtmark</artifactId>
       <version>0.16</version>
     </dependency>
+    <dependency>
+      <groupId>com.github.jknack</groupId>
+      <artifactId>handlebars</artifactId>
+      <version>4.2.0</version>
+    </dependency>
   </dependencies>
 
   <build>
