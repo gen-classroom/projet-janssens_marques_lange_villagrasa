@@ -1,16 +1,10 @@
 package com.gen.app;
 
-import junit.framework.TestCase;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class FormatPageTest extends TestCase {
-
-    public void testMarkdownToHtml() {
-    }
-
-    public void testSaveMetada() {
-    }
-
+public class FormatPageTest {
+    @Test
     public void testIsPageFormatted() {
         String page = "titre: Mon premier article\n" +
                 "auteur: Bertil Chapuis\n" +
