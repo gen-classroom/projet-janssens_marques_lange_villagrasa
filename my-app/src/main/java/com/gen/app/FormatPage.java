@@ -1,7 +1,5 @@
 package com.gen.app;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.github.rjeschke.txtmark.Processor;
 
 public class FormatPage {
@@ -9,7 +7,7 @@ public class FormatPage {
         return Processor.process(markdown);
     }
 
-    JsonObject metaDataToJson(String metadata)
+    String metaDataToJson(String metadata)
     {
 
         String[] lines = metadata.split("\n");
@@ -28,12 +26,29 @@ public class FormatPage {
         }
         str.append("}");
 
-        JsonObject jsonObject = new JsonParser().parse(str.toString()).getAsJsonObject();
-        return jsonObject;
+        return str.toString();
     }
 
+    /**
+     * split the content of a page into config and html
+     * the page must have the following syntax:
+     * ```
+     * metada1: value of metada 1
+     * metadata2: value of metada 2
+     * ---
+     * # My mardown page
+     * And bellow the split expression `---`
+     * will be the text of the page
+     * @param page a page respecting the right format
+     * @return array of strings containing:
+     *  id[0] config in json format
+     *  id[1] html
+     */
+    String[] formatPage(String page) {
+        String[] data = page.split("---");
+        String config = metaDataToJson(data[0]);
+        String html = markdownToHtml(data[1]);
 
-    void formatPage(String page) {
-
+        return new String[] {config, html};
     }
 }
