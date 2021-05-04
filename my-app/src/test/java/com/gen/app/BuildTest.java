@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 
 public class BuildTest{
 
-    String sitePath = "./websites/test";
+    String sitePath = "test";
 
     @Test
     public void canBuild(){
@@ -42,14 +42,15 @@ public class BuildTest{
      */
     private void initSite(){
         try {
-            Files.createDirectories(Paths.get(sitePath));
-            Files.write(Paths.get( sitePath +"/index.md"), "{}\n---\n#Index".getBytes(StandardCharsets.UTF_8));
-
-            Files.createDirectories(Paths.get(sitePath + "/content"));
-            Files.write(Paths.get(sitePath + "/content/page.md"), "{}\n---\n#Page".getBytes(StandardCharsets.UTF_8));
+            Init init = new Init();
+            init.createWebsiteFolder(sitePath);
         }
         catch (IOException e) {
-            System.err.println("Could not create build folder");
+            System.err.println("Could not create folder");
+            e.printStackTrace();
+        }
+        catch (Exception e){
+            System.err.println("Could not create folder");
             e.printStackTrace();
         }
     }
