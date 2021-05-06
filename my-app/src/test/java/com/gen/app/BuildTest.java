@@ -15,6 +15,29 @@ import static org.junit.Assert.assertEquals;
 public class BuildTest{
 
     String sitePath = "test";
+    String indexContent =
+            "<html lang=\"en\">\n" +
+            "<head>\n" +
+            "    <meta charset=\"UTF-8\">\n" +
+            "    <title>Mon site | Index</title>\n" +
+            "</head>\n" +
+            "<body>\n" +
+            "    <h1>Index</h1>\n\n" +
+            "</body>\n" +
+            "</html>";
+
+    String pageContent =
+            "<html lang=\"en\">\n" +
+                    "<head>\n" +
+                    "    <meta charset=\"UTF-8\">\n" +
+                    "    <title>Mon site | Mon Premier Site</title>\n" +
+                    "</head>\n" +
+                    "<body>\n" +
+                    "    <h1>Mon titre</h1>\n" +
+                    "<h2>Mon sous-titre</h2>\n" +
+                    "<p>Le contenu de mon article.</p>\n\n"+
+                    "</body>\n" +
+                    "</html>";
 
     @Test
     public void canBuild(){
@@ -26,8 +49,8 @@ public class BuildTest{
             String index = new String(Files.readAllBytes(Paths.get( sitePath + "/build/index.html")));
             String page = new String(Files.readAllBytes(Paths.get( sitePath + "/build/content/page.html")));
 
-            assertEquals("<h1>Index</h1>\n", index);
-            assertEquals("<h1>Page</h1>\n", page);
+            assertEquals(indexContent, index);
+            assertEquals(pageContent, page);
         }
         catch (IOException e) {
             System.err.println("Could not create build folder");
