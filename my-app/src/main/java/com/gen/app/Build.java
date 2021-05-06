@@ -22,9 +22,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @CommandLine.Command(name = "build", description = "building")
 
@@ -83,10 +88,27 @@ public class Build implements Callable<Integer> {
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
         // Initialize template
         try{
-            TemplateLoader loader = new FileTemplateLoader(sitePath + "/template",
-                    ".html");
-            Handlebars handlebars = new Handlebars(loader);
-            this.template = handlebars.compile("layout");
+            //TemplateLoader loader = new FileTemplateLoader(sitePath + "/template", ".html");
+            Handlebars handlebars = new Handlebars();
+
+            String layout = Files.readString(Paths.get(sitePath + "/template/layout.html"));
+            Matcher m = Pattern.compile("\\{\\{ *% include [a-zA-z0-9.-_]* *\\}\\}").matcher(layout);
+            StringBuffer sb = new StringBuffer();
+            while (m.find())
+            {
+                System.out.println(m.group());
+                // Extract the file name
+                Matcher m2 = Pattern.compile("[a-zA-z0-9.-_]* *\\}\\}").matcher(m.group());
+                m2.find();
+
+                String fileName = m2.group().replace(" ", "").replace("}}", "");
+                System.out.println(fileName);
+                String fileContent = Files.readString(Paths.get(sitePath + "/template/" + fileName));
+                m.appendReplacement(sb, fileContent);
+            }
+            m.appendTail(sb);
+            System.out.println(sb.toString());
+            this.template = handlebars.compileInline(sb.toString());
         } catch(IOException e){
             System.err.println("Could not load template file");
             e.printStackTrace();
@@ -96,6 +118,10 @@ public class Build implements Callable<Integer> {
 
         // Build all the files
         buildPagesInDirectory("");
+    }
+
+    private void getFilenameInMatch(MatchResult res, String s){
+
     }
 
     /**

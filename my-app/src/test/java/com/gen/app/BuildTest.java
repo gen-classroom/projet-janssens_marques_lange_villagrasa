@@ -22,6 +22,10 @@ public class BuildTest{
             "    <title>Mon site | Index</title>\n" +
             "</head>\n" +
             "<body>\n" +
+            "    <ul>\n" +
+            "    <li><a href=\"/index.html\">home</a></li>\n" +
+            "    <li><a href=\"/content/page.html\">page</a></li>\n" +
+            "</ul>\n" +
             "    <h1>Index</h1>\n\n" +
             "</body>\n" +
             "</html>";
@@ -33,6 +37,10 @@ public class BuildTest{
                     "    <title>Mon site | Mon Premier Site</title>\n" +
                     "</head>\n" +
                     "<body>\n" +
+                    "    <ul>\n" +
+                    "    <li><a href=\"/index.html\">home</a></li>\n" +
+                    "    <li><a href=\"/content/page.html\">page</a></li>\n" +
+                    "</ul>\n" +
                     "    <h1>Mon titre</h1>\n" +
                     "<h2>Mon sous-titre</h2>\n" +
                     "<p>Le contenu de mon article.</p>\n\n"+
