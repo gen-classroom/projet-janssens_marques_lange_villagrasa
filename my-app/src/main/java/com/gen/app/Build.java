@@ -88,7 +88,6 @@ public class Build implements Callable<Integer> {
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
         // Initialize template
         try{
-            //TemplateLoader loader = new FileTemplateLoader(sitePath + "/template", ".html");
             Handlebars handlebars = new Handlebars();
 
             String layout = Files.readString(Paths.get(sitePath + "/template/layout.html"));
@@ -118,10 +117,6 @@ public class Build implements Callable<Integer> {
 
         // Build all the files
         buildPagesInDirectory("");
-    }
-
-    private void getFilenameInMatch(MatchResult res, String s){
-
     }
 
     /**
