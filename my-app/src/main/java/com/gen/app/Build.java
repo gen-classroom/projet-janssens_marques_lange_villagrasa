@@ -95,18 +95,15 @@ public class Build implements Callable<Integer> {
             StringBuffer sb = new StringBuffer();
             while (m.find())
             {
-                System.out.println(m.group());
                 // Extract the file name
                 Matcher m2 = Pattern.compile("[a-zA-z0-9.-_]* *\\}\\}").matcher(m.group());
                 m2.find();
 
                 String fileName = m2.group().replace(" ", "").replace("}}", "");
-                System.out.println(fileName);
                 String fileContent = Files.readString(Paths.get(sitePath + "/template/" + fileName));
                 m.appendReplacement(sb, fileContent);
             }
             m.appendTail(sb);
-            System.out.println(sb.toString());
             this.template = handlebars.compileInline(sb.toString());
         } catch(IOException e){
             System.err.println("Could not load template file");
