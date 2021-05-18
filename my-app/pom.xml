@@ -82,6 +82,13 @@
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <version>3.0.2</version>
+          <configuration>
+            <archive>
+              <manifest>
+                <mainClass>com.gen.app.Statique</mainClass>
+              </manifest>
+            </archive>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>
@@ -123,14 +130,23 @@
           </execution>
         </executions>
       </plugin>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.4</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
             <configuration>
-                <source>11</source>
-                <target>11</target>
+              <shadedArtifactAttached>true</shadedArtifactAttached>
+              <shadedClassifierName>Statique</shadedClassifierName>
             </configuration>
-        </plugin>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 </project>
