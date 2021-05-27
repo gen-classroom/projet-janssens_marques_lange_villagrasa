@@ -14,7 +14,38 @@ import static org.junit.Assert.assertEquals;
 
 public class BuildTest{
 
-    String sitePath = "./websites/test";
+    String sitePath = "test";
+    String indexContent =
+            "<html lang=\"en\">\n" +
+            "<head>\n" +
+            "    <meta charset=\"UTF-8\">\n" +
+            "    <title>Mon site | Index</title>\n" +
+            "</head>\n" +
+            "<body>\n" +
+            "    <ul>\n" +
+            "    <li><a href=\"/index.html\">home</a></li>\n" +
+            "    <li><a href=\"/content/page.html\">page</a></li>\n" +
+            "</ul>\n" +
+            "    <h1>Index</h1>\n\n" +
+            "</body>\n" +
+            "</html>";
+
+    String pageContent =
+            "<html lang=\"en\">\n" +
+                    "<head>\n" +
+                    "    <meta charset=\"UTF-8\">\n" +
+                    "    <title>Mon site | Mon Premier Site</title>\n" +
+                    "</head>\n" +
+                    "<body>\n" +
+                    "    <ul>\n" +
+                    "    <li><a href=\"/index.html\">home</a></li>\n" +
+                    "    <li><a href=\"/content/page.html\">page</a></li>\n" +
+                    "</ul>\n" +
+                    "    <h1>Mon titre</h1>\n" +
+                    "<h2>Mon sous-titre</h2>\n" +
+                    "<p>Le contenu de mon article.</p>\n\n"+
+                    "</body>\n" +
+                    "</html>";
 
     @Test
     public void canBuild(){
@@ -26,8 +57,8 @@ public class BuildTest{
             String index = new String(Files.readAllBytes(Paths.get( sitePath + "/build/index.html")));
             String page = new String(Files.readAllBytes(Paths.get( sitePath + "/build/content/page.html")));
 
-            assertEquals("<h1>Index</h1>\n", index);
-            assertEquals("<h1>Page</h1>\n", page);
+            assertEquals(indexContent, index);
+            assertEquals(pageContent, page);
         }
         catch (IOException e) {
             System.err.println("Could not create build folder");
@@ -42,14 +73,15 @@ public class BuildTest{
      */
     private void initSite(){
         try {
-            Files.createDirectories(Paths.get(sitePath));
-            Files.write(Paths.get( sitePath +"/index.md"), "{}\n---\n#Index".getBytes(StandardCharsets.UTF_8));
-
-            Files.createDirectories(Paths.get(sitePath + "/content"));
-            Files.write(Paths.get(sitePath + "/content/page.md"), "{}\n---\n#Page".getBytes(StandardCharsets.UTF_8));
+            Init init = new Init();
+            init.createWebsiteFolder(sitePath);
         }
         catch (IOException e) {
-            System.err.println("Could not create build folder");
+            System.err.println("Could not create folder");
+            e.printStackTrace();
+        }
+        catch (Exception e){
+            System.err.println("Could not create folder");
             e.printStackTrace();
         }
     }
