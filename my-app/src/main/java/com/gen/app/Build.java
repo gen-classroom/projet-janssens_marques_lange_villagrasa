@@ -11,6 +11,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import com.sun.nio.file.SensitivityWatchEventModifier;
+import org.apache.commons.io.FilenameUtils;
 import picocli.CommandLine;
 import com.gen.app.FormatPage;
 
@@ -19,17 +21,22 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.nio.file.StandardWatchEventKinds.*;
+
 
 @CommandLine.Command(name = "build", description = "building")
 
@@ -50,13 +57,124 @@ public class Build implements Callable<Integer> {
 
     @CommandLine.Parameters(index="0", description="Build specified site")
     public String sitePath;
+
+    @CommandLine.Option(names = "--watch", description = "Watches for file modifications and rebuilds")
+    boolean watch;
+
     Map<String, Object> siteConfig;
     public Template template;
 
     @Override
     public Integer call() throws Exception {
         buildWebsite();
+        if(watch){
+            System.out.println("Watching for changes");
+            watchWebsite();
+        }
         return 1;
+    }
+
+    public void watchWebsite(){
+        try {
+            FileSystem fs = FileSystems.getDefault();
+            WatchService ws = fs.newWatchService();
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+
+            Path pTemp = Paths.get(sitePath);
+            // Register changes recursively
+            final Map<WatchKey, Path> keys = new HashMap<>();
+
+            Consumer<Path> register = p -> {
+                if (!p.toFile().exists() || !p.toFile().isDirectory()) {
+                    throw new RuntimeException("folder " + p + " does not exist or is not a directory");
+                }
+                try {
+                    Files.walkFileTree(p, new SimpleFileVisitor<Path>() {
+                        @Override
+                        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                            if(!dir.startsWith(sitePath + "/build")){
+                                System.out.println("registering " + dir + " in watcher service");
+                                WatchKey watchKey = dir.register(ws, new WatchEvent.Kind[]{ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE}, SensitivityWatchEventModifier.HIGH);
+                                keys.put(watchKey, dir);
+                            }
+
+                            return FileVisitResult.CONTINUE;
+                        }
+                    });
+                } catch (IOException e) {
+                    throw new RuntimeException("Error registering path " + p);
+                }
+            };
+
+
+            register.accept(pTemp);
+
+            executor.submit(() -> {
+                while (true) {
+                    System.out.println("1");
+                    final WatchKey key;
+                    try {
+                        System.out.println("2");
+                        key = ws.take(); // wait for a key to be available
+                        System.out.println("3");
+                    } catch (InterruptedException ex) {
+
+                        return;
+                    }
+                    System.out.println("4");
+                    final Path dir = keys.get(key);
+                    if (dir == null) {
+                        System.err.println("WatchKey " + key + " not recognized!");
+                        continue;
+                    }
+                    System.out.println("5");
+                    key.pollEvents().stream()
+                            .filter(e -> (e.kind() != OVERFLOW))
+                            .map(e -> ((WatchEvent<Path>) e))
+                            .forEach(p -> {
+                                final Path absPath = dir.resolve(p.context());
+                                String path = absPath.toString().replace(sitePath, "");
+                                System.out.println(path);
+                                if(p.kind() == ENTRY_MODIFY || p.kind() == ENTRY_CREATE) {
+
+                                    System.out.println("UPDATE FILE" + path);
+
+                                    File file = new File(sitePath + "/" + path);
+                                    System.out.println(file.toString());
+                                    if (path.endsWith(".md")) {
+                                        // Rebuild the specific page
+                                        buildPage(path.replace("/" + file.getName(), ""), file);
+                                    } else if (path == "config.json") {
+                                        // We need to rebuild the website if the config changed
+                                        buildWebsite();
+                                    }
+
+                                }
+                                else if(p.kind() == ENTRY_DELETE){
+                                    if (path.endsWith(".md")) {
+                                        File md = new File(sitePath + "/build/" + path);
+                                        File correspond = new File(md.getPath().replace(md.getName(), "") + md.getName().replace(".md", ".html"));
+                                        System.out.println("Delete " + correspond.toString());
+                                        correspond.delete();
+                                    }
+                                }
+                                System.out.printf("%s %d %s\n", p.kind(), p.count(), path);
+
+                            });
+
+                    boolean valid = key.reset(); // IMPORTANT: The key must be reset after processed
+                    if (!valid) {
+                        break;
+                    }
+                }
+            });
+
+        } catch (IOException e) {
+
+        }
+        while(true){
+
+        }
     }
 
     /**
@@ -116,6 +234,34 @@ public class Build implements Callable<Integer> {
         buildPagesInDirectory("");
     }
 
+    private void buildPage(String path, File file){
+        try {
+            Files.createDirectories(Paths.get(sitePath + "/build/" + path));
+            System.out.println("Building " + path + "/" +file.getName());
+            String pageContent = new String(Files.readAllBytes(Paths.get(sitePath + path + "/" +file.getName())));
+            Page page = processPage(pageContent);
+
+            // Load metadata
+            Gson gson = new Gson();
+
+            Type type = new TypeToken<Map<String, Object>>(){}.getType();
+            Map<String, Object> pageConfig = gson.fromJson(page.metadata, type);
+            Map<String, Object> pageContext = new HashMap<>();
+            // Apply template to page
+            pageContext.put("site", this.siteConfig);
+            pageContext.put("page", pageConfig);
+            pageContext.put("content", page.content);
+
+            String pageHtml = template.apply(pageContext);
+
+            Files.write(Paths.get(sitePath + "/build" + path + "/" +file.getName().replace(".md", ".html")), pageHtml.getBytes(StandardCharsets.UTF_8));
+        }
+        catch (IOException e) {
+            System.err.println("Could not build page " + path + "/" +file.getName());
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Builds pages of the website by recursively looking for md files
      * @param path path of the directory to look into
@@ -132,31 +278,7 @@ public class Build implements Callable<Integer> {
             }
             // Get md files
             else if(file.getName().endsWith(".md")){
-                try {
-                    Files.createDirectories(Paths.get(sitePath + "/build/" + path));
-                    System.out.println("Building " + path + "/" +file.getName());
-                    String pageContent = new String(Files.readAllBytes(Paths.get(sitePath + path + "/" +file.getName())));
-                    Page page = processPage(pageContent);
-
-                    // Load metadata
-                    Gson gson = new Gson();
-
-                    Type type = new TypeToken<Map<String, Object>>(){}.getType();
-                    Map<String, Object> pageConfig = gson.fromJson(page.metadata, type);
-                    Map<String, Object> pageContext = new HashMap<>();
-                    // Apply template to page
-                    pageContext.put("site", this.siteConfig);
-                    pageContext.put("page", pageConfig);
-                    pageContext.put("content", page.content);
-
-                    String pageHtml = template.apply(pageContext);
-
-                    Files.write(Paths.get(sitePath + "/build" + path + "/" +file.getName().replace(".md", ".html")), pageHtml.getBytes(StandardCharsets.UTF_8));
-                }
-                catch (IOException e) {
-                    System.err.println("Could not build page " + path + "/" +file.getName());
-                    e.printStackTrace();
-                }
+                buildPage(path, file);
             }
         }
     }
