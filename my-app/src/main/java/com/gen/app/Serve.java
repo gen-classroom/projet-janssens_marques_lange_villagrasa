@@ -47,6 +47,9 @@ public class Serve implements Callable<Integer> {
             Build builder = new Build();
             builder.sitePath = sitePath;
             builder.watchWebsite();
+            while(true){
+
+            }
         }
 
         return 0;

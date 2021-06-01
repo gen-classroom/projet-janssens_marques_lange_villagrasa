@@ -70,6 +70,9 @@ public class Build implements Callable<Integer> {
         if(watch){
             System.out.println("Watching for changes");
             watchWebsite();
+            while(true){
+
+            }
         }
         return 1;
     }
@@ -162,9 +165,6 @@ public class Build implements Callable<Integer> {
             });
 
         } catch (IOException e) {
-
-        }
-        while(true){
 
         }
     }
