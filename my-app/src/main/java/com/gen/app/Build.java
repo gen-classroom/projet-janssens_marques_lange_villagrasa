@@ -59,7 +59,7 @@ public class Build implements Callable<Integer> {
     public String sitePath;
 
     @CommandLine.Option(names = "--watch", description = "Watches for file modifications and rebuilds")
-    boolean watch;
+    public boolean watch;
 
     Map<String, Object> siteConfig;
     public Template template;
@@ -111,23 +111,18 @@ public class Build implements Callable<Integer> {
 
             executor.submit(() -> {
                 while (true) {
-                    System.out.println("1");
                     final WatchKey key;
                     try {
-                        System.out.println("2");
                         key = ws.take(); // wait for a key to be available
-                        System.out.println("3");
                     } catch (InterruptedException ex) {
 
                         return;
                     }
-                    System.out.println("4");
                     final Path dir = keys.get(key);
                     if (dir == null) {
                         System.err.println("WatchKey " + key + " not recognized!");
                         continue;
                     }
-                    System.out.println("5");
                     key.pollEvents().stream()
                             .filter(e -> (e.kind() != OVERFLOW))
                             .map(e -> ((WatchEvent<Path>) e))
@@ -136,8 +131,6 @@ public class Build implements Callable<Integer> {
                                 String path = absPath.toString().replace(sitePath, "");
                                 System.out.println(path);
                                 if(p.kind() == ENTRY_MODIFY || p.kind() == ENTRY_CREATE) {
-
-                                    System.out.println("UPDATE FILE" + path);
 
                                     File file = new File(sitePath + "/" + path);
                                     System.out.println(file.toString());
@@ -158,7 +151,6 @@ public class Build implements Callable<Integer> {
                                         correspond.delete();
                                     }
                                 }
-                                System.out.printf("%s %d %s\n", p.kind(), p.count(), path);
 
                             });
 
