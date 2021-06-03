@@ -1,0 +1,11 @@
+path_classifiers:
+  docs:
+    exclude: "/"
+  test:
+    exclude: "/"
+  generated:
+    exclude: "/"
+  library: 
+    exclude: "/"
+  template:
+    exclude: "/"
