@@ -13,6 +13,14 @@ public class CleanTest {
     @Test
     public void shouldCleanBuildFolder()
     {
+        try {
+            Init init = new Init();
+            init.createWebsiteFolder("./test/mon/site");
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            assert false;
+        }
 
         Build builder = new Build();
         builder.sitePath = "./test/mon/site";
