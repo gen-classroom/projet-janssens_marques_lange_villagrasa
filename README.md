@@ -26,31 +26,31 @@ Make sure to have `Java 11` or higher.
  ### Create a new site
  Due to an issue with maven not copying the `resources` folder to the target directory, we are unable to `init` a site at the end of this sprint.
  
- You can still use the other commands on the `websites/mysite` website or use intellij to use the init command.
+ You can still use the other commands on the `websites/mysite/` website or use IntelliJ to use the init command.
  
  Creates a new website with the default pages
  ```bash
- java -cp target/lib/*:target/my-app-0.0.1-SNAPSHOT.jar com.gen.app.Statique init websites/mywebsite
+ java -jar target/my-app-0.0.1-SNAPSHOT-Statique.jar init websites/mysite/
  ```
  
  ### Build the website
  Builds the specified site
  ```bash
- java -cp target/lib/*:target/my-app-0.0.1-SNAPSHOT.jar com.gen.app.Statique build websites/mywebsite
+ java -jar target/my-app-0.0.1-SNAPSHOT-Statique.jar build websites/mysite/
  ```
  You can also add the -watch argument to trach file changes and automatically recompile the pages
  
  ### Serve the website
  Serves the site on the user's web browser
  ```bash
- java -cp target/lib/*:target/my-app-0.0.1-SNAPSHOT.jar com.gen.app.Statique serve websites/mywebsite
+ java -jar target/my-app-0.0.1-SNAPSHOT-Statique.jar serve websites/mysite/
  ```
  You can also add the -watch argument to trach file changes and automatically recompile the pages
  
  ### Clean the website
  Deletes the build of the website
  ```bash
- java -cp target/lib/*:target/my-app-0.0.1-SNAPSHOT.jar com.gen.app.Statique clean websites/mywebsite
+ java -jar target/my-app-0.0.1-SNAPSHOT-Statique.jar clean websites/mysite/
  ```
 
 ### Dependencies
