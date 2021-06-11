@@ -8,11 +8,14 @@ import java.io.File;
 import java.net.URI;
 import java.util.concurrent.Callable;
 
-@CommandLine.Command(name = "Serve", description = "serving")
+@CommandLine.Command(name = "serve", description = "serving")
 public class Serve implements Callable<Integer> {
 
     @CommandLine.Parameters(index="0", description="serve specified site")
     public String sitePath;
+
+    @CommandLine.Option(names = "--watch", description = "Watches for file modifications and rebuilds")
+    public boolean watch;
 
     @Override
     public Integer call() throws Exception {
@@ -38,6 +41,15 @@ public class Serve implements Callable<Integer> {
         catch (Exception e)
         {
             System.out.println(e.getMessage());
+        }
+
+        if(watch){
+            Build builder = new Build();
+            builder.sitePath = sitePath;
+            builder.watchWebsite();
+            while(true){
+
+            }
         }
 
         return 0;
